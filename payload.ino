@@ -19,7 +19,7 @@ static void print_date(TinyGPS &gps);
 static void print_str(const char *str, int len);
 
 int SHT_clockPin = 4;  // pin used for clock
-int SHT_dataPin  = 3;  // pin used for data
+int SHT_dataPin  = 3 ;  // pin used for data
 
 //Digital read pins
 const int xPin = 0;
@@ -449,14 +449,15 @@ void loop()
     Serial.print(humidity);
     //  Serial.println("");
     //  Serial.println();
-    Serial.print(" | gps ");
-    
+    Serial.print("|");
+    //gps.f_get_position(&flat, &flon, &age);
     print_float(flat, TinyGPS::GPS_INVALID_F_ANGLE, 10, 6);
+    Serial.print("|");
     print_float(flon, TinyGPS::GPS_INVALID_F_ANGLE, 11, 6);
 
-    print_float(gps.f_altitude(), TinyGPS::GPS_INVALID_F_ALTITUDE, 7, 2);
+    //print_float(gps.f_altitude(), TinyGPS::GPS_INVALID_F_ALTITUDE, 7, 2);
 
-    print_str(flat == TinyGPS::GPS_INVALID_F_ANGLE ? "*** " : TinyGPS::cardinal(TinyGPS::course_to(flat, flon, LONDON_LAT, LONDON_LON)), 6);
+    //print_str(flat == TinyGPS::GPS_INVALID_F_ANGLE ? "*** " : TinyGPS::cardinal(TinyGPS::course_to(flat, flon, LONDON_LAT, LONDON_LON)), 6);
 
 
     Serial.println();
