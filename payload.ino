@@ -423,6 +423,8 @@ void loop()
 
     float pressure = bmp085GetPressure(bmp085ReadUP());
     float humidity = getHumidity();
+    
+    gps.f_get_position(&flat, &flon, &age);
     //Output the caculations
     // Accelerometer data
     Serial.print("x ");
@@ -448,7 +450,7 @@ void loop()
     //  Serial.println("");
     //  Serial.println();
     Serial.print(" | gps ");
-    gps.f_get_position(&flat, &flon, &age);
+    
     print_float(flat, TinyGPS::GPS_INVALID_F_ANGLE, 10, 6);
     print_float(flon, TinyGPS::GPS_INVALID_F_ANGLE, 11, 6);
 
@@ -460,5 +462,5 @@ void loop()
     Serial.println();
 
 
-    smartdelay(100);//just here to slow down the serial output - Easier to read
+    //smartdelay(100);//just here to slow down the serial output - Easier to read
 }
