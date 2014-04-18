@@ -12,6 +12,7 @@ TinyGPS gps;
 
 SoftwareSerial ss(2, 10);
 
+
 static void smartdelay(unsigned long ms);
 static void print_float(float val, float invalid, int len, int prec);
 static void print_int(unsigned long val, unsigned long invalid, int len);
@@ -63,8 +64,7 @@ long b5;
 short temperature;
 long pressure;
 
-void bmp085Calibration()
-{
+void bmp085Calibration() {
     ac1 = bmp085ReadInt(0xAA);
     ac2 = bmp085ReadInt(0xAC);
     ac3 = bmp085ReadInt(0xAE);
@@ -79,8 +79,7 @@ void bmp085Calibration()
 }
 
 // Read the uncompensated temperature value
-unsigned int bmp085ReadUT()
-{
+unsigned int bmp085ReadUT() {
     unsigned int ut;
 
     // Write 0x2E into Register 0xF4
@@ -99,8 +98,7 @@ unsigned int bmp085ReadUT()
 }
 
 // Read the uncompensated pressure value
-unsigned long bmp085ReadUP()
-{
+unsigned long bmp085ReadUP() {
     unsigned char msb, lsb, xlsb;
     unsigned long up = 0;
 
@@ -134,8 +132,7 @@ unsigned long bmp085ReadUP()
 
 // Calculate temperature given ut.
 // Value returned will be in units of 0.1 deg C
-short bmp085GetTemperature(unsigned int ut)
-{
+short bmp085GetTemperature(unsigned int ut) {
     long x1, x2;
 
     x1 = (((long)ut - (long)ac6) * (long)ac5) >> 15;
@@ -149,8 +146,7 @@ short bmp085GetTemperature(unsigned int ut)
 // calibration values must be known
 // b5 is also required so bmp085GetTemperature(...) must be called first.
 // Value returned will be pressure in units of Pa.
-float bmp085GetPressure(unsigned long up)
-{
+float bmp085GetPressure(unsigned long up) {
     long x1, x2, x3, b3, b6, p;
     unsigned long b4, b7;
 
@@ -184,8 +180,7 @@ float bmp085GetPressure(unsigned long up)
 
 }
 
-char bmp085Read(unsigned char address)
-{
+char bmp085Read(unsigned char address) {
     unsigned char data;
 
     Wire.beginTransmission(BMP085_ADDRESS);
@@ -199,8 +194,7 @@ char bmp085Read(unsigned char address)
     return Wire.read();
 }
 
-int bmp085ReadInt(unsigned char address)
-{
+int bmp085ReadInt(unsigned char address) {
     unsigned char msb, lsb;
 
     Wire.beginTransmission(BMP085_ADDRESS);
@@ -216,8 +210,7 @@ int bmp085ReadInt(unsigned char address)
     return (int) msb << 8 | lsb;
 }
 
-float getHumidity()
-{
+float getHumidity() {
     //Return  Relative Humidity
     SHT_sendCommand(B00000101, SHT_dataPin, SHT_clockPin);
     SHT_waitForResult(SHT_dataPin);
@@ -226,8 +219,7 @@ float getHumidity()
     return -4.0 + 0.0405 * val + -0.0000028 * val * val;
 }
 
-void SHT_sendCommand(int command, int dataPin, int clockPin)
-{
+void SHT_sendCommand(int command, int dataPin, int clockPin) {
     // send a command to the SHTx sensor
     // transmission start
     pinMode(dataPin, OUTPUT);
@@ -253,16 +245,14 @@ void SHT_sendCommand(int command, int dataPin, int clockPin)
 }
 
 
-void SHT_waitForResult(int dataPin)
-{
+void SHT_waitForResult(int dataPin) {
     // wait for the SHTx answer
     pinMode(dataPin, INPUT);
 
     int ack; //acknowledgement
 
     //need to wait up to 2 seconds for the value
-    for (int i = 0; i < 1000; ++i)
-    {
+    for (int i = 0; i < 1000; ++i) {
         delay(2);
         ack = digitalRead(dataPin);
         if (ack == LOW) break;
@@ -271,8 +261,7 @@ void SHT_waitForResult(int dataPin)
     if (ack == HIGH) Serial.println("ACK error 2");
 }
 
-int SHT_getData(int dataPin, int clockPin)
-{
+int SHT_getData(int dataPin, int clockPin) {
     // get data from the SHTx sensor
 
     // get the MSB (most significant bits)
@@ -293,8 +282,7 @@ int SHT_getData(int dataPin, int clockPin)
     return ((MSB << 8) | LSB); //combine bits
 }
 
-void SHT_skipCrc(int dataPin, int clockPin)
-{
+void SHT_skipCrc(int dataPin, int clockPin) {
     // skip CRC data from the SHTx sensor
     pinMode(dataPin, OUTPUT);
     pinMode(clockPin, OUTPUT);
@@ -303,27 +291,20 @@ void SHT_skipCrc(int dataPin, int clockPin)
     digitalWrite(clockPin, LOW);
 }
 
-static void smartdelay(unsigned long ms)
-{
+static void smartdelay(unsigned long ms) {
     unsigned long start = millis();
-    do
-    {
+    do {
         while (ss.available())
             gps.encode(ss.read());
-    }
-    while (millis() - start < ms);
+    } while (millis() - start < ms);
 }
 
-static void print_float(float val, float invalid, int len, int prec)
-{
-    if (val == invalid)
-    {
+static void print_float(float val, float invalid, int len, int prec) {
+    if (val == invalid) {
         while (len-- > 1)
             Serial.print('*');
         Serial.print(' ');
-    }
-    else
-    {
+    } else {
         Serial.print(val, prec);
         int vi = abs((int)val);
         int flen = prec + (val < 0.0 ? 2 : 1); // . and -
@@ -334,8 +315,7 @@ static void print_float(float val, float invalid, int len, int prec)
     smartdelay(0);
 }
 
-static void print_int(unsigned long val, unsigned long invalid, int len)
-{
+static void print_int(unsigned long val, unsigned long invalid, int len) {
     char sz[32];
     if (val == invalid)
         strcpy(sz, "*******");
@@ -350,16 +330,14 @@ static void print_int(unsigned long val, unsigned long invalid, int len)
     smartdelay(0);
 }
 
-static void print_date(TinyGPS &gps)
-{
+static void print_date(TinyGPS &gps) {
     int year;
     byte month, day, hour, minute, second, hundredths;
     unsigned long age;
     gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &age);
     if (age == TinyGPS::GPS_INVALID_AGE)
         Serial.print("********** ******** ");
-    else
-    {
+    else {
         char sz[32];
         sprintf(sz, "%02d/%02d/%02d %02d:%02d:%02d ",
                 month, day, year, hour, minute, second);
@@ -369,24 +347,21 @@ static void print_date(TinyGPS &gps)
     smartdelay(0);
 }
 
-static void print_str(const char *str, int len)
-{
+static void print_str(const char *str, int len) {
     int slen = strlen(str);
     for (int i = 0; i < len; ++i)
         Serial.print(i < slen ? str[i] : ' ');
     smartdelay(0);
 }
 
-void setup()
-{
+void setup() {
     Serial.begin(57600);
     ss.begin(57600);
     Wire.begin();
     bmp085Calibration();
 }
 
-float getTemperature()
-{
+float getTemperature() {
     //Return Temperature in Celsius
     SHT_sendCommand(B00000011, SHT_dataPin, SHT_clockPin);
     SHT_waitForResult(SHT_dataPin);
@@ -396,8 +371,7 @@ float getTemperature()
     return (float)val * 0.018 - 39.5; //convert to celsius
 }
 
-void loop()
-{
+void loop() {
 
     //read the analog values from the accelerometer
     int xRead = analogRead(xPin);
@@ -423,29 +397,29 @@ void loop()
 
     float pressure = bmp085GetPressure(bmp085ReadUP());
     float humidity = getHumidity();
-    
+
     gps.f_get_position(&flat, &flon, &age);
     //Output the caculations
     // Accelerometer data
-    Serial.print("x ");
+    //Serial.print("x ");
     Serial.print(x);
-    Serial.print(" | y ");
+    Serial.print("|");
     Serial.print(y);
-    Serial.print(" | z ");
+    Serial.print("|");
     Serial.print(z);
     //Serial.println("Barometric Pressure and Temperature Data:");
     float temperature = getTemperature();
 
-    Serial.print(" | temp ");
+    Serial.print("|");
     Serial.print(temperature);
     //  Serial.println(" deg C");
-    Serial.print(" | pres ");
+    Serial.print("|");
     Serial.print(pressure, DEC);
     //  Serial.println(" Pa");
 
 
 
-    Serial.print(" | humidity ");
+    Serial.print("|");
     Serial.print(humidity);
     //  Serial.println("");
     //  Serial.println();

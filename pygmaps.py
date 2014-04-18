@@ -257,6 +257,6 @@ if __name__ == "__main__":
 	# PARAMETER1:	file (string) the map path and file
 	# RETURN:	no return, generate html file in specified directory
 	#========================================================================================
-	mymap.draw('./mymap.html')
+	mymap.draw('./mymap.png')
 	
 		
