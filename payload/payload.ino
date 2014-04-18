@@ -416,6 +416,7 @@ void loop() {
     //Output the caculations
     // Accelerometer data
     //Serial.print("x ");
+    Serial.print("OK|")
     Serial.print(x);
     Serial.print("|");
     Serial.print(y);
@@ -442,6 +443,7 @@ void loop() {
     print_float(flat, TinyGPS::GPS_INVALID_F_ANGLE, 10, 6);
     Serial.print("|");
     print_float(flon, TinyGPS::GPS_INVALID_F_ANGLE, 11, 6);
+    Serial.print("|OK")
 
     //print_float(gps.f_altitude(), TinyGPS::GPS_INVALID_F_ALTITUDE, 7, 2);
 
