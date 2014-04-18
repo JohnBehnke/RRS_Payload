@@ -4,14 +4,31 @@
 //Simple code for the ADXL335, prints calculated orientation via serial
 //Adapted for the Rensselaer Rocket Society's payload by Brian Kelley and John Behnke
 //////////////////////////////////////////////////////////////////
-#define BMP085_ADDRESS 0x77
+
 #include <TinyGPS.h>
 #include <SoftwareSerial.h>
+#include <Wire.h>
 
 TinyGPS gps;
 
-SoftwareSerial ss(2, 10);
 
+//Digital Pins
+SoftwareSerial ss(2, 10); //GPS Pins. 10 is declared, but not used
+
+//Pins for the accelerometer
+const int xPin = 0;
+const int yPin = 1;
+const int zPin = 2;
+
+
+//Pins for the humidty sensor
+int SHT_clockPin = 4;
+int SHT_dataPin  = 3 ;
+
+//Memory addresses for the Temperature and Pressure sensor
+
+
+#define BMP085_ADDRESS 0x77
 
 static void smartdelay(unsigned long ms);
 static void print_float(float val, float invalid, int len, int prec);
@@ -19,15 +36,12 @@ static void print_int(unsigned long val, unsigned long invalid, int len);
 static void print_date(TinyGPS &gps);
 static void print_str(const char *str, int len);
 
-int SHT_clockPin = 4;  // pin used for clock
-int SHT_dataPin  = 3 ;  // pin used for data
 
-//Digital read pins
-const int xPin = 0;
-const int yPin = 1;
-const int zPin = 2;
 
-#include <Wire.h>
+
+
+
+
 
 //The minimum and maximum values that came from
 //the accelerometer while standing still
