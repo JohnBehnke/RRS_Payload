@@ -19,6 +19,7 @@ ACC = open('acc.txt', 'w')
 TEMP = open('temp.txt', 'w')
 HUM = open('hum.txt', 'w')
 PRES = open('pres.txt', 'w')
+ALT = open('alt.txt', 'w')
 
 
 # Make a new map using dummy coordinates. Ideally they are fairly close to your actual location
@@ -26,7 +27,7 @@ mymap = pygmaps.maps(42.729358, -73.674453, 16)
 
 # Open a serial stream on the USB port. The string will change depending on
 #Computer ans USB port in use,
-ser = serial.Serial('/dev/cu.usbserial-AD02ICC0', 57600)
+ser = serial.Serial('/dev/cu.usbserial-A601SFE1', 57600)
 
 
 while True:
@@ -38,7 +39,7 @@ while True:
 	data_to_parse = data_to_parse.strip().split("|")
 
 	#Make sure that the list has all the proper data in the right order
-	if data_to_parse[0] == 'OK' && len(data_to_parse) == 10 && data_to_parse[-1] == 'OK':
+	if data_to_parse[0] == 'OK' and len(data_to_parse) == 10 and data_to_parse[-1] == 'OK':
 
 		# Get rid of the 'OK' tags
 		data_to_parse.pop(0)
@@ -54,9 +55,11 @@ while True:
 
 		H_Data = data_to_parse[5]
 
-		G_Log = data_to_parse[-2]
+		G_Log = data_to_parse[-3]
 
-		G_Lat = data_to_parse[-1]
+		G_Lat = data_to_parse[-2]
+
+		ALt_Data - data_to_parse[-1]
 			
 
 		#Start writing to the files
@@ -80,18 +83,27 @@ while True:
 
 		PRES.write(P_Data+"\n")
 
-		#Convert the strings for the long and lat into ints
-		GPS_INTS=map(float,data_to_parse[-2:])
+		ALT.seek(0,2)
 
-		#Add the point to the map and draw an uncertainty ring around it
-		mymap.addpoint(GPS_INTS[0], GPS_INTS[1],"#0000FF")
+		ALT.write(ALt_Data+"\n")
 
-		mymap.addradpoint(GPS_INTS[0], GPS_INTS[1], 10, "#FF0000")
+		try:
+			#Convert the strings for the long and lat into ints
+			GPS_INTS=map(float,data_to_parse[-2:])
 
-		#draw it to the file
-		mymap.draw('~/Desktop/GPS.html')
+			#Add the point to the map and draw an uncertainty ring around it
+			mymap.addpoint(GPS_INTS[0], GPS_INTS[1],"#0000FF")
 
-		print data_to_parse
+			mymap.addradpoint(GPS_INTS[0], GPS_INTS[1], 10, "#FF0000")
+			path = [(GPS_INTS[0],GPS_INTS[1]),(37.428, -122.145),(37.427, -122.145),(37.427, -122.146),(37.427, -122.146)]
+			mymap.addpath(path,"#00FF00")
+
+			#draw it to the file
+			mymap.draw('./mymap.HTML')
+
+			print data_to_parse
+		except ValueError:
+			pass
 		
 
 	else:
