@@ -416,7 +416,7 @@ void loop() {
     //Output the caculations
     // Accelerometer data
     //Serial.print("x ");
-    Serial.print("OK|")
+    Serial.print("OK|");
     Serial.print(x);
     Serial.print("|");
     Serial.print(y);
@@ -432,8 +432,6 @@ void loop() {
     Serial.print(pressure, DEC);
     //  Serial.println(" Pa");
 
-
-
     Serial.print("|");
     Serial.print(humidity);
     //  Serial.println("");
@@ -443,11 +441,11 @@ void loop() {
     print_float(flat, TinyGPS::GPS_INVALID_F_ANGLE, 10, 6);
     Serial.print("|");
     print_float(flon, TinyGPS::GPS_INVALID_F_ANGLE, 11, 6);
-    Serial.print("|")
+    Serial.print("|");
 
     print_float(gps.f_altitude(), TinyGPS::GPS_INVALID_F_ALTITUDE, 7, 2);
 
-    Serial.print("|OK")
+    Serial.print("|OK");
 
     //print_str(flat == TinyGPS::GPS_INVALID_F_ANGLE ? "*** " : TinyGPS::cardinal(TinyGPS::course_to(flat, flon, LONDON_LAT, LONDON_LON)), 6);
 
