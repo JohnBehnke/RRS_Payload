@@ -9,6 +9,14 @@
 #include <SoftwareSerial.h>
 #include <Wire.h>
 
+// Library: https://github.com/practicalarduino/SHT1x
+#include <SHT1x.h>
+
+#define dataPin  10
+#define clockPin 11
+
+SHT1x sht1x(dataPin, clockPin);
+
 TinyGPS gps;
 
 
@@ -20,14 +28,7 @@ const int xPin = 0;
 const int yPin = 1;
 const int zPin = 2;
 
-
-//Pins for the humidty sensor
-int SHT_clockPin = 4;
-int SHT_dataPin  = 3 ;
-
 //Memory addresses for the Temperature and Pressure sensor
-
-
 #define BMP085_ADDRESS 0x77
 
 static void smartdelay(unsigned long ms);
@@ -224,87 +225,6 @@ int bmp085ReadInt(unsigned char address) {
     return (int) msb << 8 | lsb;
 }
 
-float getHumidity() {
-    //Return  Relative Humidity
-    SHT_sendCommand(B00000101, SHT_dataPin, SHT_clockPin);
-    SHT_waitForResult(SHT_dataPin);
-    int val = SHT_getData(SHT_dataPin, SHT_clockPin);
-    SHT_skipCrc(SHT_dataPin, SHT_clockPin);
-    return -4.0 + 0.0405 * val + -0.0000028 * val * val;
-}
-
-void SHT_sendCommand(int command, int dataPin, int clockPin) {
-    // send a command to the SHTx sensor
-    // transmission start
-    pinMode(dataPin, OUTPUT);
-    pinMode(clockPin, OUTPUT);
-    digitalWrite(dataPin, HIGH);
-    digitalWrite(clockPin, HIGH);
-    digitalWrite(dataPin, LOW);
-    digitalWrite(clockPin, LOW);
-    digitalWrite(clockPin, HIGH);
-    digitalWrite(dataPin, HIGH);
-    digitalWrite(clockPin, LOW);
-
-    // shift out the command (the 3 MSB are address and must be 000, the last 5 bits are the command)
-    shiftOut(dataPin, clockPin, MSBFIRST, command);
-
-    // verify we get the right ACK
-    digitalWrite(clockPin, HIGH);
-    pinMode(dataPin, INPUT);
-
-    if (digitalRead(dataPin)) Serial.println("ACK error 0");
-    digitalWrite(clockPin, LOW);
-    if (!digitalRead(dataPin)) Serial.println("ACK error 1");
-}
-
-
-void SHT_waitForResult(int dataPin) {
-    // wait for the SHTx answer
-    pinMode(dataPin, INPUT);
-
-    int ack; //acknowledgement
-
-    //need to wait up to 2 seconds for the value
-    for (int i = 0; i < 1000; ++i) {
-        delay(2);
-        ack = digitalRead(dataPin);
-        if (ack == LOW) break;
-    }
-
-    if (ack == HIGH) Serial.println("ACK error 2");
-}
-
-int SHT_getData(int dataPin, int clockPin) {
-    // get data from the SHTx sensor
-
-    // get the MSB (most significant bits)
-    pinMode(dataPin, INPUT);
-    pinMode(clockPin, OUTPUT);
-    byte MSB = shiftIn(dataPin, clockPin, MSBFIRST);
-
-    // send the required ACK
-    pinMode(dataPin, OUTPUT);
-    digitalWrite(dataPin, HIGH);
-    digitalWrite(dataPin, LOW);
-    digitalWrite(clockPin, HIGH);
-    digitalWrite(clockPin, LOW);
-
-    // get the LSB (less significant bits)
-    pinMode(dataPin, INPUT);
-    byte LSB = shiftIn(dataPin, clockPin, MSBFIRST);
-    return ((MSB << 8) | LSB); //combine bits
-}
-
-void SHT_skipCrc(int dataPin, int clockPin) {
-    // skip CRC data from the SHTx sensor
-    pinMode(dataPin, OUTPUT);
-    pinMode(clockPin, OUTPUT);
-    digitalWrite(dataPin, HIGH);
-    digitalWrite(clockPin, HIGH);
-    digitalWrite(clockPin, LOW);
-}
-
 static void smartdelay(unsigned long ms) {
     unsigned long start = millis();
     do {
@@ -375,27 +295,17 @@ void setup() {
     bmp085Calibration();
 }
 
-float getTemperature() {
-    //Return Temperature in Celsius
-    SHT_sendCommand(B00000011, SHT_dataPin, SHT_clockPin);
-    SHT_waitForResult(SHT_dataPin);
-
-    int val = SHT_getData(SHT_dataPin, SHT_clockPin);
-    SHT_skipCrc(SHT_dataPin, SHT_clockPin);
-    return (float)val * 0.018 - 39.5; //convert to celsius
-}
-
 void loop() {
 
     //read the analog values from the accelerometer
-    int xRead = analogRead(xPin);
-    int yRead = analogRead(yPin);
-    int zRead = analogRead(zPin);
+    //int xRead = analogRead(xPin);
+    //int yRead = analogRead(yPin);
+    //int zRead = analogRead(zPin);
 
     //convert read values to degrees -90 to 90 - Needed for atan2
-    int xAng = map(xRead, minVal, maxVal, -90, 90);
-    int yAng = map(yRead, minVal, maxVal, -90, 90);
-    int zAng = map(zRead, minVal, maxVal, -90, 90);
+    //int xAng = map(xRead, minVal, maxVal, -90, 90);
+    //int yAng = map(yRead, minVal, maxVal, -90, 90);
+    //int zAng = map(zRead, minVal, maxVal, -90, 90);
 
     float flat, flon;
     unsigned long age, date, time, chars = 0;
@@ -405,27 +315,17 @@ void loop() {
     //Caculate 360deg values like so: atan2(-yAng, -zAng)
     //atan2 outputs the value of -π to π (radians)
     //We are then converting the radians to degrees
-    x = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
-    y = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
-    z = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
+    //x = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
+    //y = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
+    //z = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
 
     float pressure = bmp085GetPressure(bmp085ReadUP());
-    float humidity = getHumidity();
-
     gps.f_get_position(&flat, &flon, &age);
-    //Output the caculations
-    // Accelerometer data
-    //Serial.print("x ");
-    Serial.print("OK|");
-    Serial.print(x);
-    Serial.print("|");
-    Serial.print(y);
-    Serial.print("|");
-    Serial.print(z);
-    //Serial.println("Barometric Pressure and Temperature Data:");
-    float temperature = getTemperature();
+    float temperature = sht1x.readTemperatureC();
+    float humidity = sht1x.readHumidity();
 
-    Serial.print("|");
+    Serial.print("OK|");
+    //Serial.print("|");
     Serial.print(temperature);
     //  Serial.println(" deg C");
     Serial.print("|");
@@ -434,22 +334,13 @@ void loop() {
 
     Serial.print("|");
     Serial.print(humidity);
-    //  Serial.println("");
-    //  Serial.println();
     Serial.print("|");
-    //gps.f_get_position(&flat, &flon, &age);
     print_float(flat, TinyGPS::GPS_INVALID_F_ANGLE, 10, 6);
     Serial.print("|");
     print_float(flon, TinyGPS::GPS_INVALID_F_ANGLE, 11, 6);
     Serial.print("|");
-
     print_float(gps.f_altitude(), TinyGPS::GPS_INVALID_F_ALTITUDE, 7, 2);
-
     Serial.print("|OK");
-
-    //print_str(flat == TinyGPS::GPS_INVALID_F_ANGLE ? "*** " : TinyGPS::cardinal(TinyGPS::course_to(flat, flon, LONDON_LAT, LONDON_LON)), 6);
-
-
     Serial.println();
 
 
