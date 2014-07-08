@@ -293,6 +293,8 @@ void setup() {
     ss.begin(57600);
     Wire.begin();
     bmp085Calibration();
+    //Grabs the time since the start of the arduino in milliseconds.
+    time_since_start = millis();
 }
 
 void loop() {
@@ -340,6 +342,8 @@ void loop() {
     print_float(flon, TinyGPS::GPS_INVALID_F_ANGLE, 11, 6);
     Serial.print("|");
     print_float(gps.f_altitude(), TinyGPS::GPS_INVALID_F_ALTITUDE, 7, 2);
+    Serial.print("|");
+    Serial.print(time_since_start)
     Serial.print("|OK");
     Serial.println();
 

@@ -1,6 +1,6 @@
 import serial
 import pygmaps 
-import time
+
 
 
 # Data parser made by John Behnke for the Rensselaer Rocket Society
@@ -26,7 +26,7 @@ ALT = open('alt.txt', 'w')
 mymap = pygmaps.maps(42.729358, -73.674453, 16)
 
 # Open a serial stream on the USB port. The string will change depending on
-#Computer ans USB port in use,
+#Computer and USB port in use,
 ser = serial.Serial('/dev/cu.usbserial-A601SFE1', 57600)
 
 
@@ -39,7 +39,7 @@ while True:
 	data_to_parse = data_to_parse.strip().split("|")
 
 	#Make sure that the list has all the proper data in the right order
-	if data_to_parse[0] == 'OK' and len(data_to_parse) == 10 and data_to_parse[-1] == 'OK':
+	if data_to_parse[0] == 'OK' and len(data_to_parse) == 11 and data_to_parse[-1] == 'OK':
 
 		# Get rid of the 'OK' tags
 		data_to_parse.pop(0)
@@ -55,37 +55,39 @@ while True:
 
 		H_Data = data_to_parse[5]
 
-		G_Log = data_to_parse[-3]
+		G_Log = data_to_parse[-4]
 
-		G_Lat = data_to_parse[-2]
+		G_Lat = data_to_parse[-3]
 
-		ALt_Data - data_to_parse[-1]
+		ALt_Data = data_to_parse[-2]
+
+		Time = data_to_parse[-1]
 			
 
 		#Start writing to the files
 		GPS.seek(0, 2)
 
-		GPS.write(G_Log+"|"+G_Lat+"\n")
+		GPS.write(Time + "|" + G_Log + "|" + G_Lat + "\n")
 
 		ACC.seek(0, 2)
 
-		ACC.write(A_Data[0]+"|"+A_Data[1]+"|"+A_Data[2]+"\n")
+		ACC.write(Time + "|" + A_Data[0]+"|"+A_Data[1]+"|"+A_Data[2]+"\n")
 
 		TEMP.seek(0,2)
 
-		TEMP.write(T_Data+"\n")
+		TEMP.write(Time + "|" + T_Data+"\n")
 
 		HUM.seek(0,2)
 
-		HUM.write(H_Data+"\n")
+		HUM.write(Time + "|" + H_Data+"\n")
 
 		PRES.seek(0,2)
 
-		PRES.write(P_Data+"\n")
+		PRES.write(Time + "|" + P_Data+"\n")
 
 		ALT.seek(0,2)
 
-		ALT.write(ALt_Data+"\n")
+		ALT.write(Time + "|" + ALt_Data+"\n")
 
 		try:
 			#Convert the strings for the long and lat into ints
