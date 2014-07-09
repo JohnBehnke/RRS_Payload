@@ -3,7 +3,7 @@ import pygmaps
 
 
 
-# Data parser made by John Behnke for the Rensselaer Rocket Society
+# Data parser made by John Behnke along with Brian Kelley for the Rensselaer Rocket Society
 # This handels a serial stream containing GPS longitude and latitude
 # Along with other sensor data sent over a serial stream and parses it
 
@@ -14,12 +14,12 @@ import pygmaps
 
 
 # Make a bunch of text files for each statistic
-GPS = open('gps.txt', 'w')
-ACC = open('acc.txt', 'w')
-TEMP = open('temp.txt', 'w')
-HUM = open('hum.txt', 'w')
-PRES = open('pres.txt', 'w')
-ALT = open('alt.txt', 'w')
+ACC = open('acc.txt', 'a')
+GPS = open('gps.txt', 'a')
+TEMP = open('temp.txt', 'a')
+HUM = open('hum.txt', 'a')
+PRES = open('pres.txt', 'a')
+ALT = open('alt.txt', 'a')
 
 
 # Make a new map using dummy coordinates. Ideally they are fairly close to your actual location
@@ -65,27 +65,27 @@ while True:
 			
 
 		#Start writing to the files
-		GPS.seek(0, 2)
+		
 
 		GPS.write(Time + "|" + G_Log + "|" + G_Lat + "\n")
 
-		ACC.seek(0, 2)
+		
 
 		ACC.write(Time + "|" + A_Data[0]+"|"+A_Data[1]+"|"+A_Data[2]+"\n")
 
-		TEMP.seek(0,2)
+		
 
 		TEMP.write(Time + "|" + T_Data+"\n")
 
-		HUM.seek(0,2)
+		
 
 		HUM.write(Time + "|" + H_Data+"\n")
 
-		PRES.seek(0,2)
+		
 
 		PRES.write(Time + "|" + P_Data+"\n")
 
-		ALT.seek(0,2)
+		
 
 		ALT.write(Time + "|" + ALt_Data+"\n")
 
