@@ -167,10 +167,7 @@ void loop() {
     //int yAng = map(yRead, minVal, maxVal, -90, 90);
     //int zAng = map(zRead, minVal, maxVal, -90, 90);
 
-    float flat, flon;
-    unsigned long age, date, time, chars = 0;
-    unsigned short sentences = 0, failed = 0;
-    static const double LONDON_LAT = 42.729159, LONDON_LON = -73.674154;
+
 
     //Caculate 360deg values like so: atan2(-yAng, -zAng)
     //atan2 outputs the value of -π to π (radians)
