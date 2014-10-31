@@ -29,13 +29,6 @@ const int yPin = 1;
 const int zPin = 2;
 
 //Memory addresses for the Temperature and Pressure sensor
-#define BMP085_ADDRESS 0x77
-
-static void smartdelay(unsigned long ms);
-static void print_float(float val, float invalid, int len, int prec);
-static void print_int(unsigned long val, unsigned long invalid, int len);
-static void print_date(TinyGPS &gps);
-static void print_str(const char *str, int len);
 
 
 
