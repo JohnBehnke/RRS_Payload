@@ -1,15 +1,3 @@
-//////////////////////////////////////////////////////////////////
-//Some code ©2011 bildr
-//Released under the MIT License - Please reuse change and share
-//Simple code for the ADXL335, prints calculated orientation via serial
-//Adapted for the Rensselaer Rocket Society's payload by Brian Kelley and John Behnke
-//////////////////////////////////////////////////////////////////
-
-#include <TinyGPS.h>
-#include <SoftwareSerial.h>
-#include <Wire.h>
-
-
 
 
 static void print_date(TinyGPS &gps) {
