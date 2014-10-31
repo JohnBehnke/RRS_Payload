@@ -9,44 +9,8 @@
 #include <SoftwareSerial.h>
 #include <Wire.h>
 
-// Library: https://github.com/practicalarduino/SHT1x
-#include <SHT1x.h>
-
-#define dataPin  10
-#define clockPin 11
 
 
-
-
-return (p / 1000) * .009;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-static void print_int(unsigned long val, unsigned long invalid, int len) {
-    char sz[32];
-    if (val == invalid)
-        strcpy(sz, "*******");
-    else
-        sprintf(sz, "%ld", val);
-    sz[len] = 0;
-    for (int i = strlen(sz); i < len; ++i)
-        sz[i] = ' ';
-    if (len > 0)
-        sz[len - 1] = ' ';
-    Serial.print(sz);
-    smartdelay(0);
-}
 
 static void print_date(TinyGPS &gps) {
     int year;
