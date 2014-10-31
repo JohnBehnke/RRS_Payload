@@ -79,19 +79,7 @@ long b5;
 short temperature;
 long pressure;
 
-void bmp085Calibration() {
-    ac1 = bmp085ReadInt(0xAA);
-    ac2 = bmp085ReadInt(0xAC);
-    ac3 = bmp085ReadInt(0xAE);
-    ac4 = bmp085ReadInt(0xB0);
-    ac5 = bmp085ReadInt(0xB2);
-    ac6 = bmp085ReadInt(0xB4);
-    b1 = bmp085ReadInt(0xB6);
-    b2 = bmp085ReadInt(0xB8);
-    mb = bmp085ReadInt(0xBA);
-    mc = bmp085ReadInt(0xBC);
-    md = bmp085ReadInt(0xBE);
-}
+
 
 // Read the uncompensated temperature value
 unsigned int bmp085ReadUT() {
