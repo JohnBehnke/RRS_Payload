@@ -29,13 +29,7 @@ return (p / 1000) * .009;
 
 
 
-static void smartdelay(unsigned long ms) {
-    unsigned long start = millis();
-    do {
-        while (ss.available())
-            gps.encode(ss.read());
-    } while (millis() - start < ms);
-}
+
 
 static void print_float(float val, float invalid, int len, int prec) {
     if (val == invalid) {
