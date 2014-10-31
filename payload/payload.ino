@@ -23,19 +23,7 @@ return (p / 1000) * .009;
 
 }
 
-char bmp085Read(unsigned char address) {
-    unsigned char data;
 
-    Wire.beginTransmission(BMP085_ADDRESS);
-    Wire.write(address);
-    Wire.endTransmission();
-
-    Wire.requestFrom(BMP085_ADDRESS, 1);
-    while (!Wire.available())
-        ;
-
-    return Wire.read();
-}
 
 int bmp085ReadInt(unsigned char address) {
     unsigned char msb, lsb;
