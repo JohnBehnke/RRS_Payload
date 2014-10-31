@@ -15,36 +15,6 @@
 #define dataPin  10
 #define clockPin 11
 
-SHT1x sht1x(dataPin, clockPin);
-
-TinyGPS gps;
-
-
-//Digital Pins
-SoftwareSerial ss(2, 10); //GPS Pins. 10 is declared, but not used
-
-//Pins for the accelerometer
-const int xPin = 0;
-const int yPin = 1;
-const int zPin = 2;
-
-//Memory addresses for the Temperature and Pressure sensor
-
-
-
-
-
-
-
-
-//The minimum and maximum values that came from
-//the accelerometer while standing still
-
-
-
-
-
-
 
 
 
