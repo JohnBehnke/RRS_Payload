@@ -77,28 +77,7 @@ long pressure;
 
 unsigned long bmp085ReadUP() {
 
-    Wire.write(0x34 + (OSS << 6));
-    Wire.endTransmission();
 
-    // Wait for conversion, delay time dependent on OSS
-    delay(2 + (3 << OSS));
-
-    // Read register 0xF6 (MSB), 0xF7 (LSB), and 0xF8 (XLSB)
-    Wire.beginTransmission(BMP085_ADDRESS);
-    Wire.write(0xF6);
-    Wire.endTransmission();
-    Wire.requestFrom(BMP085_ADDRESS, 3);
-
-    // Wait for data to become available
-    while (Wire.available() < 3)
-        ;
-    msb = Wire.read();
-    lsb = Wire.read();
-    xlsb = Wire.read();
-
-    up = (((unsigned long) msb << 16) | ((unsigned long) lsb << 8) | (unsigned long) xlsb) >> (8 - OSS);
-
-    return up;
 }
 
 // Calculate temperature given ut.
