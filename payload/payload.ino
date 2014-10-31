@@ -82,15 +82,6 @@ unsigned long bmp085ReadUP() {
 
 // Calculate temperature given ut.
 // Value returned will be in units of 0.1 deg C
-short bmp085GetTemperature(unsigned int ut) {
-    long x1, x2;
-
-    x1 = (((long)ut - (long)ac6) * (long)ac5) >> 15;
-    x2 = ((long)mc << 11) / (x1 + md);
-    b5 = x1 + x2;
-
-    return ((b5 + 8) >> 4);
-}
 
 // Calculate pressure given up
 // calibration values must be known
