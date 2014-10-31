@@ -83,13 +83,7 @@ long pressure;
 
 
 unsigned long bmp085ReadUP() {
-    unsigned char msb, lsb, xlsb;
-    unsigned long up = 0;
 
-    // Write 0x34+(OSS<<6) into register 0xF4
-    // Request a pressure reading w/ oversampling setting
-    Wire.beginTransmission(BMP085_ADDRESS);
-    Wire.write(0xF4);
     Wire.write(0x34 + (OSS << 6));
     Wire.endTransmission();
 
