@@ -1,21 +1,4 @@
 
-
-
-
-
-
-
-void setup() {
-    Serial.begin(57600);
-    ss.begin(57600);
-    Wire.begin();
-    bmp085Calibration();
-    //Grabs the time since the start of the arduino in milliseconds.
-    time_since_start = millis();
-}
-
-
-
 float pressure = bmp085GetPressure(bmp085ReadUP());
 gps.f_get_position(&flat, &flon, &age);
 float temperature = sht1x.readTemperatureC();
