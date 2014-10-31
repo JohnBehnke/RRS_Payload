@@ -81,12 +81,7 @@ long pressure;
 
 
 
-// Read the uncompensated temperature value
-unsigned int bmp085ReadUT() {
 
-}
-
-// Read the uncompensated pressure value
 unsigned long bmp085ReadUP() {
     unsigned char msb, lsb, xlsb;
     unsigned long up = 0;
