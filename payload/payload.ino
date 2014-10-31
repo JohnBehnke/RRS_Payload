@@ -76,28 +76,20 @@ long pressure;
 
 
 
-float bmp085GetPressure(unsigned long up) {
+
+b7 = ((unsigned long)(up - b3) * (50000 >> OSS));
+if (b7 < 0x80000000)
+    p = (b7 << 1) / b4;
+else
+    p = (b7 / b4) << 1;
+
+x1 = (p >> 8) * (p >> 8);
+x1 = (x1 * 3038) >> 16;
+x2 = (-7357 * p) >> 16;
+p += (x1 + x2 + 3791) >> 4;
 
 
-    // Calculate B4
-    x1 = (ac3 * b6) >> 13;
-    x2 = (b1 * ((b6 * b6) >> 12)) >> 16;
-    x3 = ((x1 + x2) + 2) >> 2;
-    b4 = (ac4 * (unsigned long)(x3 + 32768)) >> 15;
-
-    b7 = ((unsigned long)(up - b3) * (50000 >> OSS));
-    if (b7 < 0x80000000)
-        p = (b7 << 1) / b4;
-    else
-        p = (b7 / b4) << 1;
-
-    x1 = (p >> 8) * (p >> 8);
-    x1 = (x1 * 3038) >> 16;
-    x2 = (-7357 * p) >> 16;
-    p += (x1 + x2 + 3791) >> 4;
-
-
-    return (p / 1000) * .009;
+return (p / 1000) * .009;
 
 
 }
