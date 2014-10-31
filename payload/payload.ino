@@ -88,15 +88,7 @@ unsigned long bmp085ReadUP() {
 // b5 is also required so bmp085GetTemperature(...) must be called first.
 // Value returned will be pressure in units of Pa.
 float bmp085GetPressure(unsigned long up) {
-    long x1, x2, x3, b3, b6, p;
-    unsigned long b4, b7;
 
-    b6 = b5 - 4000;
-    // Calculate B3
-    x1 = (b2 * (b6 * b6) >> 12) >> 11;
-    x2 = (ac2 * b6) >> 11;
-    x3 = x1 + x2;
-    b3 = (((((long)ac1) * 4 + x3) << OSS) + 2) >> 2;
 
     // Calculate B4
     x1 = (ac3 * b6) >> 13;
