@@ -21,25 +21,13 @@
 return (p / 1000) * .009;
 
 
-}
 
 
 
-int bmp085ReadInt(unsigned char address) {
-    unsigned char msb, lsb;
 
-    Wire.beginTransmission(BMP085_ADDRESS);
-    Wire.write(address);
-    Wire.endTransmission();
 
-    Wire.requestFrom(BMP085_ADDRESS, 2);
-    while (Wire.available() < 2)
-        ;
-    msb = Wire.read();
-    lsb = Wire.read();
 
-    return (int) msb << 8 | lsb;
-}
+
 
 static void smartdelay(unsigned long ms) {
     unsigned long start = millis();
