@@ -84,12 +84,6 @@ long pressure;
 // Read the uncompensated temperature value
 unsigned int bmp085ReadUT() {
 
-    // Wait at least 4.5ms
-    delay(5);
-
-    // Read two bytes from registers 0xF6 and 0xF7
-    ut = bmp085ReadInt(0xF6);
-    return ut;
 }
 
 // Read the uncompensated pressure value
