@@ -82,31 +82,7 @@ void loop() {
         // (this lets us immediately read more without waiting for an interrupt)
         fifoCount -= packetSize;
 
-#ifdef OUTPUT_READABLE_QUATERNION
-        // display quaternion values in easy matrix form: w x y z
-        mpu.dmpGetQuaternion(&q, fifoBuffer);
-        Serial.print("quat\t");
-        Serial.print(q.w);
-        Serial.print("\t");
-        Serial.print(q.x);
-        Serial.print("\t");
-        Serial.print(q.y);
-        Serial.print("\t");
-        Serial.println(q.z);
-#endif
-
-#ifdef OUTPUT_READABLE_EULER
-        // display Euler angles in degrees
-        mpu.dmpGetQuaternion(&q, fifoBuffer);
-        mpu.dmpGetEuler(euler, &q);
-        Serial.print("euler\t");
-        Serial.print(euler[0] * 180 / M_PI);
-        Serial.print("\t");
-        Serial.print(euler[1] * 180 / M_PI);
-        Serial.print("\t");
-        Serial.println(euler[2] * 180 / M_PI);
-#endif
-
+#
 #ifdef OUTPUT_READABLE_YAWPITCHROLL
         // display Euler angles in degrees
         mpu.dmpGetQuaternion(&q, fifoBuffer);
