@@ -39,38 +39,6 @@ const int zPin = 2;
 
 //The minimum and maximum values that came from
 //the accelerometer while standing still
-//You very well may need to change these
-int minVal = 265;
-int maxVal = 402;
-
-
-//to hold the caculated values
-double x;
-double y;
-double z;
-
-
-const unsigned char OSS = 0;  // Oversampling Setting
-
-// Calibration values
-int ac1;
-int ac2;
-int ac3;
-unsigned int ac4;
-unsigned int ac5;
-unsigned int ac6;
-int b1;
-int b2;
-int mb;
-int mc;
-int md;
-
-// b5 is calculated in bmp085GetTemperature(...), this variable is also used in bmp085GetPressure(...)
-// so ...Temperature(...) must be called before ...Pressure(...).
-long b5;
-
-short temperature;
-long pressure;
 
 
 
