@@ -31,21 +31,7 @@ return (p / 1000) * .009;
 
 
 
-static void print_float(float val, float invalid, int len, int prec) {
-    if (val == invalid) {
-        while (len-- > 1)
-            Serial.print('*');
-        Serial.print(' ');
-    } else {
-        Serial.print(val, prec);
-        int vi = abs((int)val);
-        int flen = prec + (val < 0.0 ? 2 : 1); // . and -
-        flen += vi >= 1000 ? 4 : vi >= 100 ? 3 : vi >= 10 ? 2 : 1;
-        for (int i = flen; i < len; ++i)
-            Serial.print(' ');
-    }
-    smartdelay(0);
-}
+
 
 static void print_int(unsigned long val, unsigned long invalid, int len) {
     char sz[32];
