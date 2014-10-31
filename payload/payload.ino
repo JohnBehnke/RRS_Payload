@@ -1,21 +1,7 @@
 
 
-static void print_date(TinyGPS &gps) {
-    int year;
-    byte month, day, hour, minute, second, hundredths;
-    unsigned long age;
-    gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &age);
-    if (age == TinyGPS::GPS_INVALID_AGE)
-        Serial.print("********** ******** ");
-    else {
-        char sz[32];
-        sprintf(sz, "%02d/%02d/%02d %02d:%02d:%02d ",
-                month, day, year, hour, minute, second);
-        Serial.print(sz);
-    }
-    print_int(age, TinyGPS::GPS_INVALID_AGE, 5);
-    smartdelay(0);
-}
+
+
 
 static void print_str(const char *str, int len) {
     int slen = strlen(str);
