@@ -3,12 +3,7 @@
 
 
 
-static void print_str(const char *str, int len) {
-    int slen = strlen(str);
-    for (int i = 0; i < len; ++i)
-        Serial.print(i < slen ? str[i] : ' ');
-    smartdelay(0);
-}
+
 
 void setup() {
     Serial.begin(57600);
