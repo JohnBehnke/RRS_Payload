@@ -285,25 +285,7 @@ int bmp085ReadInt(unsigned char address) {
 }
 
 // Read the uncompensated temperature value
-unsigned int bmp085ReadUT() {
-    unsigned int ut;
-
-    // Write 0x2E into Register 0xF4
-    // This requests a temperature reading
-    Wire.beginTransmission(BMP085_ADDRESS);
-    Wire.write(0xF4);
-    Wire.write(0x2E);
-    Wire.endTransmission();
-
-    // Wait at least 4.5ms
-    delay(5);
-
-    // Read two bytes from registers 0xF6 and 0xF7
-    ut = bmp085ReadInt(0xF6);
-    return ut;
-}
-
-// Read the uncompensated pressure value
+d pressure value
 unsigned long bmp085ReadUP() {
     unsigned char msb, lsb, xlsb;
     unsigned long up = 0;
