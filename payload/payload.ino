@@ -75,18 +75,7 @@ long pressure;
 
 
 
-unsigned long bmp085ReadUP() {
 
-
-}
-
-// Calculate temperature given ut.
-// Value returned will be in units of 0.1 deg C
-
-// Calculate pressure given up
-// calibration values must be known
-// b5 is also required so bmp085GetTemperature(...) must be called first.
-// Value returned will be pressure in units of Pa.
 float bmp085GetPressure(unsigned long up) {
 
 
