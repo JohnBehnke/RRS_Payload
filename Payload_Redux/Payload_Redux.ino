@@ -126,184 +126,104 @@ void loop() {
         Serial.println(aaWorld.z);
 #endif
 
-#ifdef OUTPUT_TEAPOT
-        // display quaternion values in InvenSense Teapot demo format:
-        teapotPacket[2] = fifoBuffer[0];
-        teapotPacket[3] = fifoBuffer[1];
-        teapotPacket[4] = fifoBuffer[4];
-        teapotPacket[5] = fifoBuffer[5];
-        teapotPacket[6] = fifoBuffer[8];
-        teapotPacket[7] = fifoBuffer[9];
-        teapotPacket[8] = fifoBuffer[12];
-        teapotPacket[9] = fifoBuffer[13];
-        Serial.write(teapotPacket, 14);
-        teapotPacket[11]++; // packetCount, loops at 0xFF on purpose
-#endif
-
-        // blink LED to indicate activity
-        blinkState = !blinkState;
-        digitalWrite(LED_PIN, blinkState);
-    }
-}
 
 
-// ================================================================
-// ===                      SHT15 Functions                     ===
-// ================================================================
+        /
+        // get data from the SHTx sensor
+        int getData16SHT(int dataPin, int clockPin) {
+            int val;
 
-// commands for reading/sending data to a SHTx sensor
-int shiftIn(int dataPin, int clockPin, int numBits) {
-    int ret = 0;
+            // get the MSB (most significant bits)
+            pinMode(dataPin, INPUT);
+            pinMode(clockPin, OUTPUT);
+            val = shiftIn(dataPin, clockPin, 8);
+            val *= 256; // this is equivalent to val << 8;
 
-    for (int i = 0; i < numBits; ++i) {
-        digitalWrite(clockPin, HIGH);
-        //delay(10); not needed :)
-        ret = ret * 2 + digitalRead(dataPin);
-        digitalWrite(clockPin, LOW);
-    }
-    return (ret);
-}
+            // send the required ACK
+            pinMode(dataPin, OUTPUT);
+            digitalWrite(dataPin, HIGH);
+            digitalWrite(dataPin, LOW);
+            digitalWrite(clockPin, HIGH);
+            digitalWrite(clockPin, LOW);
 
-// send a command to the SHTx sensor
-void sendCommandSHT(int command, int dataPin, int clockPin) {
-    int ack;
+            // get the LSB (less significant bits)
+            pinMode(dataPin, INPUT);
+            val |= shiftIn(dataPin, clockPin, 8);
+            return val;
+        }
 
-    // transmission start
-    pinMode(dataPin, OUTPUT);
-    pinMode(clockPin, OUTPUT);
-    digitalWrite(dataPin, HIGH);
-    digitalWrite(clockPin, HIGH);
-    digitalWrite(dataPin, LOW);
-    digitalWrite(clockPin, LOW);
-    digitalWrite(clockPin, HIGH);
-    digitalWrite(dataPin, HIGH);
-    digitalWrite(clockPin, LOW);
+        // skip CRC data from the SHTx sensor
+        void skipCrcSHT(int dataPin, int clockPin) {
+            pinMode(dataPin, OUTPUT);
+            pinMode(clockPin, OUTPUT);
+            digitalWrite(dataPin, HIGH);
+            digitalWrite(clockPin, HIGH);
+            digitalWrite(clockPin, LOW);
+        }
 
-    // shift out the command (the 3 MSB are address and must be 000, the last 5 bits are the command)
-    shiftOut(dataPin, clockPin, MSBFIRST, command);
+        // ================================================================
+        // ===                     BMP085 Functions                     ===
+        // ================================================================
+        int bmp085ReadInt(unsigned char address) {
+            unsigned char msb, lsb;
 
-    // verify we get the right ACK
-    digitalWrite(clockPin, HIGH);
-    pinMode(dataPin, INPUT);
-    ack = digitalRead(dataPin);
-    if (ack != LOW)
-        Serial.println("ACK error 0");
-    digitalWrite(clockPin, LOW);
-    ack = digitalRead(dataPin);
-    if (ack != HIGH)
-        Serial.println("ACK error 1");
-}
+            Wire.beginTransmission(BMP085_ADDRESS);
+            Wire.write(address);
+            Wire.endTransmission();
 
-// wait for the SHTx answer
-void waitForResultSHT(int dataPin) {
-    int ack;
+            Wire.requestFrom(BMP085_ADDRESS, 2);
+            while (Wire.available() < 2)
+                ;
+            msb = Wire.read();
+            lsb = Wire.read();
 
-    pinMode(dataPin, INPUT);
-    for (int i = 0; i < 100; ++i) {
-        delay(10);
-        ack = digitalRead(dataPin);
-        if (ack == LOW)
-            break;
-    }
-    if (ack == HIGH)
-        Serial.println("ACK error 2");
-}
+            return (int) msb << 8 | lsb;
+        }
 
-// get data from the SHTx sensor
-int getData16SHT(int dataPin, int clockPin) {
-    int val;
+        // Read the uncompensated temperature value
+        d pressure value
+        unsigned long bmp085ReadUP() {
+            unsigned char msb, lsb, xlsb;
+            unsigned long up = 0;
 
-    // get the MSB (most significant bits)
-    pinMode(dataPin, INPUT);
-    pinMode(clockPin, OUTPUT);
-    val = shiftIn(dataPin, clockPin, 8);
-    val *= 256; // this is equivalent to val << 8;
+            // Write 0x34+(OSS<<6) into register 0xF4
+            // Request a pressure reading w/ oversampling setting
+            Wire.beginTransmission(BMP085_ADDRESS);
+            Wire.write(0xF4);
+            Wire.write(0x34 + (OSS << 6));
+            Wire.endTransmission();
 
-    // send the required ACK
-    pinMode(dataPin, OUTPUT);
-    digitalWrite(dataPin, HIGH);
-    digitalWrite(dataPin, LOW);
-    digitalWrite(clockPin, HIGH);
-    digitalWrite(clockPin, LOW);
+            // Wait for conversion, delay time dependent on OSS
+            delay(2 + (3 << OSS));
 
-    // get the LSB (less significant bits)
-    pinMode(dataPin, INPUT);
-    val |= shiftIn(dataPin, clockPin, 8);
-    return val;
-}
-
-// skip CRC data from the SHTx sensor
-void skipCrcSHT(int dataPin, int clockPin) {
-    pinMode(dataPin, OUTPUT);
-    pinMode(clockPin, OUTPUT);
-    digitalWrite(dataPin, HIGH);
-    digitalWrite(clockPin, HIGH);
-    digitalWrite(clockPin, LOW);
-}
-
-// ================================================================
-// ===                     BMP085 Functions                     ===
-// ================================================================
-int bmp085ReadInt(unsigned char address) {
-    unsigned char msb, lsb;
-
-    Wire.beginTransmission(BMP085_ADDRESS);
-    Wire.write(address);
-    Wire.endTransmission();
-
-    Wire.requestFrom(BMP085_ADDRESS, 2);
-    while (Wire.available() < 2)
-        ;
-    msb = Wire.read();
-    lsb = Wire.read();
-
-    return (int) msb << 8 | lsb;
-}
-
-// Read the uncompensated temperature value
-d pressure value
-unsigned long bmp085ReadUP() {
-    unsigned char msb, lsb, xlsb;
-    unsigned long up = 0;
-
-    // Write 0x34+(OSS<<6) into register 0xF4
-    // Request a pressure reading w/ oversampling setting
-    Wire.beginTransmission(BMP085_ADDRESS);
-    Wire.write(0xF4);
-    Wire.write(0x34 + (OSS << 6));
-    Wire.endTransmission();
-
-    // Wait for conversion, delay time dependent on OSS
-    delay(2 + (3 << OSS));
-
-    // Read register 0xF6 (MSB), 0xF7 (LSB), and 0xF8 (XLSB)
-    Wire.beginTransmission(BMP085_ADDRESS);
-    Wire.write(0xF6);
-    Wire.endTransmission();
-    Wire.requestFrom(BMP085_ADDRESS, 3);
+            // Read register 0xF6 (MSB), 0xF7 (LSB), and 0xF8 (XLSB)
+            Wire.beginTransmission(BMP085_ADDRESS);
+            Wire.write(0xF6);
+            Wire.endTransmission();
+            Wire.requestFrom(BMP085_ADDRESS, 3);
 
 
 
-    // Read 1 byte from the BMP085 at 'address'
-    char bmp085Read(unsigned char address) {
-        unsigned char data;
+            // Read 1 byte from the BMP085 at 'address'
+            char bmp085Read(unsigned char address) {
+                unsigned char data;
 
-        Wire.beginTransmission(BMP085_ADDRESS);
-        Wire.write(address);
-        Wire.endTransmission();
+                Wire.beginTransmission(BMP085_ADDRESS);
+                Wire.write(address);
+                Wire.endTransmission();
 
-        Wire.requestFrom(BMP085_ADDRESS, 1);
-        while (!Wire.available())
-            ;
+                Wire.requestFrom(BMP085_ADDRESS, 1);
+                while (!Wire.available())
+                    ;
 
-        return Wire.read();
-    }
+                return Wire.read();
+            }
 
-    // ================================================================
-    // ===                     MPU6050 Functions                    ===
-    // ================================================================
+            // ================================================================
+            // ===                     MPU6050 Functions                    ===
+            // ================================================================
 
-    void dmpDataReady() {
-        mpuInterrupt = true;
-    }
+            void dmpDataReady() {
+                mpuInterrupt = true;
+            }
 
