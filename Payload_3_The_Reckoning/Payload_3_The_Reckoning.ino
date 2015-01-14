@@ -47,9 +47,9 @@ void setup(void) {
         Serial.println("Initialization of SD card failed!");
         while (1);
     }
-    
+
     if (SD.exists(fileName)) {
-      SD.remove(fileName);
+        SD.remove(fileName);
     }
 
 
@@ -74,33 +74,35 @@ void loop(void) {
     /* Get a new sensor event */
     sensors_event_t event;
 
+
     // prints out: X Accelerometer data | Magnetometer data | gyroscopic data | pressure data Z
     //                    X Y Z       |       X Y Z       |       X Y Z     | PRESSURE TEMPERATURE ALTITUDE Z
+    // accelX|accelY|accelZ|magX|magY|magZ|gyroX|gyroY|gyroZ|pressure|temperature|altitude
 
     /* Display the results (acceleration is measured in m/s^2) */
     accel.getEvent(&event);
     //Serial.print(F("ACCEL "));
     //Serial.print("X: ");
     Serial.print(event.acceleration.x);
-    Serial.print(" ");
+    Serial.print("|");
     //Serial.print("Y: ");
     Serial.print(event.acceleration.y);
-    Serial.print(" ");
+    Serial.print("|");
     //Serial.print("Z: ");
     Serial.print(event.acceleration.z);
-    Serial.print(" | ");
+    Serial.print("|");
     //Serial.println("m/s^2 ");
 
     //dataLog.print(F("ACCEL "));
     //dataLog.print("X: ");
     dataLog.print(event.acceleration.x);
-    dataLog.print(" ");
+    dataLog.print("|");
     //dataLog.print("Y: ");
     dataLog.print(event.acceleration.y);
-    dataLog.print(" ");
+    dataLog.print("|");
     //dataLog.print("Z: ");
     dataLog.print(event.acceleration.z);
-    dataLog.print(" | ");
+    dataLog.print("|");
     //dataLog.println("m/s^2 ");
 
     /* Display the results (magnetic vector values are in micro-Tesla (uT)) */
@@ -108,10 +110,10 @@ void loop(void) {
     //Serial.print(F("MAG   "));
     //Serial.print("X: ");
     Serial.print(event.magnetic.x);
-    Serial.print(" ");
+    Serial.print("|");
     //Serial.print("Y: ");
     Serial.print(event.magnetic.y);
-    Serial.print(" ");
+    Serial.print("|");
     //Serial.print("Z: ");
     Serial.print(event.magnetic.z);
     Serial.print(" | ");
@@ -120,13 +122,13 @@ void loop(void) {
     //dataLog.print(F("MAG   "));
     //dataLog.print("X: ");
     dataLog.print(event.magnetic.x);
-    dataLog.print(" ");
+    dataLog.print("|");
     //dataLog.print("Y: ");
     dataLog.print(event.magnetic.y);
-    dataLog.print(" ");
+    dataLog.print("|");
     //dataLog.print("Z: ");
     dataLog.print(event.magnetic.z);
-    dataLog.print(" | ");
+    dataLog.print("|");
     //dataLog.println("uT");
 
     /* Display the results (gyrocope values in rad/s) */
@@ -134,60 +136,65 @@ void loop(void) {
     //Serial.print(F("GYRO  "));
     //Serial.print("X: ");
     Serial.print(event.gyro.x);
-    Serial.print(" ");
+    Serial.print("|");
     //Serial.print("Y: ");
     Serial.print(event.gyro.y);
-    Serial.print(" ");
+    Serial.print("|");
     //Serial.print("Z: ");
     Serial.print(event.gyro.z);
-    Serial.print(" | ");
+    Serial.print("|");
     //Serial.println("rad/s ");
 
     //dataLog.print(F("GYRO  "));
     //dataLog.print("X: ");
     dataLog.print(event.gyro.x);
-    dataLog.print(" ");
+    dataLog.print("|");
     //dataLog.print("Y: ");
     dataLog.print(event.gyro.y);
-    dataLog.print(" ");
+    dataLog.print("|");
     //dataLog.print("Z: ");
     dataLog.print(event.gyro.z);
-    dataLog.print(" | ");
+    dataLog.print("|");
     //dataLog.println("rad/s ");
 
     /* Display the pressure sensor results (barometric pressure is measure in hPa) */
     bmp.getEvent(&event);
     if (event.pressure) {
-        /* Display atmospheric pressure in hPa */
+        /* Display atmospheric pressure in kPa */
         //Serial.print(F("PRESS "));
-        Serial.print(event.pressure);
-        Serial.print(F(" "));
+        Serial.print(event.pressure * 10);
+        Serial.print(F("|"));
 
         //dataLog.print(F("PRESS "));
-        dataLog.print(event.pressure);
-        dataLog.print(F(" "));
+        dataLog.print(event.pressure * 10);
+        dataLog.print(F("|"));
 
         /* Display ambient temperature in C */
-        float temperature;
-        bmp.getTemperature(&temperature);
-        Serial.print(temperature);
-        Serial.print(F(" "));
+        float temperatureC;
 
-        dataLog.print(temperature);
-        dataLog.print(F(" "));
+
+        bmp.getTemperature(&temperatureC);
+
+        //float temperatureF = (temperatureC * 9 * 5) + 32; //F for easy debugging
+
+        Serial.print(temperatureC);
+        Serial.print(F("|"));
+
+        dataLog.print(temperatureC);
+        dataLog.print(F("|"));
 
         /* Then convert the atmospheric pressure, SLP and temp to altitude    */
         /* Update this next line with the current SLP for better results      */
         float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
         Serial.print(bmp.pressureToAltitude(seaLevelPressure,
                                             event.pressure,
-                                            temperature));
-        Serial.println(F(" "));
+                                            temperatureC));
+        Serial.println(F("|"));
 
         dataLog.print(bmp.pressureToAltitude(seaLevelPressure,
                                              event.pressure,
-                                             temperature));
-        dataLog.println(F(" "));
+                                             temperatureC));
+        dataLog.println(F("|"));
     }
 
     //Serial.println(F(""));
