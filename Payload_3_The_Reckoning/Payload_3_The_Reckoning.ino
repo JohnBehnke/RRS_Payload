@@ -197,8 +197,8 @@ void loop(void) {
         //dataLog.println(F("|"));
     }
 
-    //Serial.println(F(""));
-    //dataLog.println(F(""));
+    Serial.println(F(""));
+    dataLog.println(F(""));
     dataLog.flush();
 }
 
