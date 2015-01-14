@@ -162,11 +162,11 @@ void loop(void) {
     if (event.pressure) {
         /* Display atmospheric pressure in kPa */
         //Serial.print(F("PRESS "));
-        Serial.print(event.pressure * 10);
+        Serial.print(event.pressure / 10);
         Serial.print(F("|"));
 
         //dataLog.print(F("PRESS "));
-        dataLog.print(event.pressure * 10);
+        dataLog.print(event.pressure / 10);
         dataLog.print(F("|"));
 
         /* Display ambient temperature in C */
