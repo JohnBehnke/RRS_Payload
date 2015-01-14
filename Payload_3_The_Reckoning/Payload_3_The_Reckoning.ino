@@ -116,7 +116,7 @@ void loop(void) {
     Serial.print("|");
     //Serial.print("Z: ");
     Serial.print(event.magnetic.z);
-    Serial.print(" | ");
+    Serial.print("|");
     //Serial.println("uT");
 
     //dataLog.print(F("MAG   "));
@@ -189,12 +189,12 @@ void loop(void) {
         Serial.print(bmp.pressureToAltitude(seaLevelPressure,
                                             event.pressure,
                                             temperatureC));
-        Serial.println(F("|"));
+        //Serial.println(F("|"));
 
         dataLog.print(bmp.pressureToAltitude(seaLevelPressure,
                                              event.pressure,
                                              temperatureC));
-        dataLog.println(F("|"));
+        //dataLog.println(F("|"));
     }
 
     //Serial.println(F(""));
