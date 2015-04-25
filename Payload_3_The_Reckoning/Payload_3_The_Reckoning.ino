@@ -80,6 +80,9 @@ void loop(void) {
     // accelX|accelY|accelZ|magX|magY|magZ|gyroX|gyroY|gyroZ|pressure|temperature|altitude
 
     /* Display the results (acceleration is measured in m/s^2) */
+
+    start = millis();
+
     accel.getEvent(&event);
     //Serial.print(F("ACCEL "));
     //Serial.print("X: ");
@@ -189,17 +192,23 @@ void loop(void) {
         Serial.print(bmp.pressureToAltitude(seaLevelPressure,
                                             event.pressure,
                                             temperatureC));
-        //Serial.println(F("|"));
+        Serial.println(F("|"));
 
         dataLog.print(bmp.pressureToAltitude(seaLevelPressure,
                                              event.pressure,
                                              temperatureC));
-        //dataLog.println(F("|"));
+        dataLog.println(F("|"));
     }
 
-    Serial.println(F(""));
-    dataLog.println(F(""));
-    dataLog.flush();
+    finished = millis();
+
+    Serial.print(finished - start)
+    dataLog.print(finished - start
+
+
+                  Serial.println(F(""));
+                  dataLog.println(F(""));
+                  dataLog.flush();
 }
 
 
