@@ -4,6 +4,11 @@ import  ImageTk
 
 from PIL import Image
 
+from mpl_toolkits.basemap import Basemap
+import numpy as np
+import matplotlib.pyplot as plt
+width = 28000000; lon_0 = -105; lat_0 = 40
+
 # open a SPIDER image and convert to byte
 
 #im = Image.open('2.png')
